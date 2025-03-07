@@ -7,6 +7,7 @@ CREATE TABLE `User` (
     `subscription_status` ENUM('ACTIVE', 'EXPIRED', 'CANCELED', 'TRIAL') NOT NULL DEFAULT 'TRIAL',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`user_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -19,6 +20,7 @@ CREATE TABLE `EmailVerification` (
     `expiresAt` DATETIME(3) NOT NULL,
     `verified` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     UNIQUE INDEX `EmailVerification_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -35,6 +37,7 @@ CREATE TABLE `Token` (
     `expires_at` DATETIME(3) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+
     UNIQUE INDEX `Token_access_token_key`(`access_token`),
     UNIQUE INDEX `Token_refresh_token_key`(`refresh_token`),
     PRIMARY KEY (`token_id`)
@@ -45,34 +48,28 @@ CREATE TABLE `Profile` (
     `profile_id` INTEGER NOT NULL AUTO_INCREMENT,
     `user_id` INTEGER NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `age_range` ENUM(
-        'AGE_2_5',
-        'AGE_5_10',
-        'AGE_6_8',
-        'AGE_11_13',
-        'AGE_14_18',
-        'AGE_ADULT'
-    ) NOT NULL,
+    `age_range` ENUM('AGE_2_5', 'AGE_5_10', 'AGE_11_13', 'AGE_14_18', 'AGE_ADULT') NOT NULL,
     `avatar_url` VARCHAR(191) NULL,
+    `grades` ENUM('PRE_SCHOOL', 'KINDERGARTEN', 'FIRST_GRADE', 'SECOND_GRADE', 'THIRD_GRADE', 'FOURTH_GRADE', 'FIFTH_GRADE', 'SIXTH_GRADE', 'SEVENTH_GRADE', 'EIGHTH_GRADE', 'NINTH_GRADE', 'TENTH_GRADE', 'ELEVENTH_GRADE', 'TWELFTH_GRADE') NULL,
+    `readingLevel` VARCHAR(191) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
-    `grades` ENUM(
-        'PRE_SCHOOL',
-        'KINDERGARTEN',
-        'FIRST_GRADE',
-        'SECOND_GRADE',
-        'THIRD_GRADE',
-        'FOURTH_GRADE',
-        'FIFTH_GRADE',
-        'SIXTH_GRADE',
-        'SEVENTH_GRADE',
-        'EIGHTH_GRADE',
-        'NINTH_GRADE',
-        'TENTH_GRADE',
-        'ELEVENTH_GRADE',
-        'TWELFTH_GRADE'
-    ),
+
     PRIMARY KEY (`profile_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Page` (
+    `page_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `profile_id` INTEGER NOT NULL,
+    `book_number` INTEGER NOT NULL DEFAULT 1,
+    `title` TEXT NOT NULL,
+    `content` TEXT NOT NULL,
+    `image_url` TEXT NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`page_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -82,6 +79,7 @@ CREATE TABLE `ReadingSession` (
     `start_time` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `end_time` DATETIME(3) NULL,
     `total_reading_time` INTEGER NOT NULL DEFAULT 0,
+
     PRIMARY KEY (`session_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -92,6 +90,7 @@ CREATE TABLE `TextRecognition` (
     `recognized_text` VARCHAR(191) NOT NULL,
     `is_readable` BOOLEAN NOT NULL,
     `captured_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`recognition_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -104,6 +103,7 @@ CREATE TABLE `PronunciationFeedback` (
     `suggested_pronunciation` VARCHAR(191) NULL,
     `feedback_details` VARCHAR(191) NULL,
     `feedback_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`feedback_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -117,6 +117,7 @@ CREATE TABLE `Report` (
     `mispronounced_words_count` INTEGER NOT NULL DEFAULT 0,
     `ai_help_count` INTEGER NOT NULL DEFAULT 0,
     `generated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`report_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -129,6 +130,7 @@ CREATE TABLE `AppSettings` (
     `theme_preference` ENUM('LIGHT', 'DARK') NOT NULL DEFAULT 'LIGHT',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+
     UNIQUE INDEX `AppSettings_profile_id_key`(`profile_id`),
     PRIMARY KEY (`settings_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -141,54 +143,34 @@ CREATE TABLE `Subscription` (
     `start_date` DATETIME(3) NOT NULL,
     `end_date` DATETIME(3) NULL,
     `status` ENUM('ACTIVE', 'EXPIRED', 'CANCELED', 'TRIAL') NOT NULL DEFAULT 'ACTIVE',
+
     UNIQUE INDEX `Subscription_user_id_key`(`user_id`),
     PRIMARY KEY (`subscription_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE
-    `Token`
-ADD
-    CONSTRAINT `Token_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Token` ADD CONSTRAINT `Token_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `Profile`
-ADD
-    CONSTRAINT `Profile_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Profile` ADD CONSTRAINT `Profile_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `ReadingSession`
-ADD
-    CONSTRAINT `ReadingSession_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Page` ADD CONSTRAINT `Page_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `TextRecognition`
-ADD
-    CONSTRAINT `TextRecognition_session_id_fkey` FOREIGN KEY (`session_id`) REFERENCES `ReadingSession`(`session_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `ReadingSession` ADD CONSTRAINT `ReadingSession_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `PronunciationFeedback`
-ADD
-    CONSTRAINT `PronunciationFeedback_session_id_fkey` FOREIGN KEY (`session_id`) REFERENCES `ReadingSession`(`session_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TextRecognition` ADD CONSTRAINT `TextRecognition_session_id_fkey` FOREIGN KEY (`session_id`) REFERENCES `ReadingSession`(`session_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `Report`
-ADD
-    CONSTRAINT `Report_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `PronunciationFeedback` ADD CONSTRAINT `PronunciationFeedback_session_id_fkey` FOREIGN KEY (`session_id`) REFERENCES `ReadingSession`(`session_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `AppSettings`
-ADD
-    CONSTRAINT `AppSettings_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Report` ADD CONSTRAINT `Report_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `Subscription`
-ADD
-    CONSTRAINT `Subscription_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `AppSettings` ADD CONSTRAINT `AppSettings_profile_id_fkey` FOREIGN KEY (`profile_id`) REFERENCES `Profile`(`profile_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Subscription` ADD CONSTRAINT `Subscription_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
