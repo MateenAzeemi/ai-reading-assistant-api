@@ -56,6 +56,22 @@ CREATE TABLE `Profile` (
     `avatar_url` VARCHAR(191) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+    `grades` ENUM(
+        'PRE_SCHOOL',
+        'KINDERGARTEN',
+        'FIRST_GRADE',
+        'SECOND_GRADE',
+        'THIRD_GRADE',
+        'FOURTH_GRADE',
+        'FIFTH_GRADE',
+        'SIXTH_GRADE',
+        'SEVENTH_GRADE',
+        'EIGHTH_GRADE',
+        'NINTH_GRADE',
+        'TENTH_GRADE',
+        'ELEVENTH_GRADE',
+        'TWELFTH_GRADE'
+    ),
     PRIMARY KEY (`profile_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
