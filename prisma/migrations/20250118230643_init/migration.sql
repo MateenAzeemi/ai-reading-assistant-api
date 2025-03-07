@@ -71,7 +71,8 @@ CREATE TABLE `Profile` (
         'TENTH_GRADE',
         'ELEVENTH_GRADE',
         'TWELFTH_GRADE'
-    ) PRIMARY KEY (`profile_id`)
+    ),
+    PRIMARY KEY (`profile_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
