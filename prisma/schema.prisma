@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id             Int                @id @default(autoincrement())
+  email               String             @unique
+  password_hash       String
+  mfa_enabled         Boolean            @default(false)
+  subscription_status SubscriptionStatus @default(TRIAL)
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @updatedAt
+  profiles            Profile[]
+  subscriptions       Subscription[]
+  tokens              Token[] // Relation to Token model
+}
+
+model EmailVerification {
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  verificationCode String
+  expiresAt        DateTime
+  verified         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+}
+
+model Token {
+  token_id      Int      @id @default(autoincrement())
+  user_id       Int
+  access_token  String   @unique
+  refresh_token String   @unique
+  device_token  String?
+  user_agent    String? // Optional: to track device/browser
+  ip_address    String? // Optional: for security/auditing
+  expires_at    DateTime // Expiration time of the access token
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user          User     @relation(fields: [user_id], references: [user_id])
+}
+
+model Profile {
+  profile_id      Int              @id @default(autoincrement())
+  user_id         Int
+  name            String
+  age_range       AgeRange
+  avatar_url      String?
+  grades          Grades? // New field
+  readingLevel    String?
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  user            User             @relation(fields: [user_id], references: [user_id])
+  readingSessions ReadingSession[]
+  appSettings     AppSettings?
+  reports         Report[]
+  pages           Page[]
+}
+
+model Page {
+  page_id     Int      @id @default(autoincrement())
+  profile_id  Int
+  book_number Int      @default(1)  // Added book_number field
+  title       String @db.Text
+  content     String @db.Text
+  image_url   String @db.Text
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  profile     Profile  @relation(fields: [profile_id], references: [profile_id])
+}
+
+model ReadingSession {
+  session_id             Int                     @id @default(autoincrement())
+  profile_id             Int
+  start_time             DateTime                @default(now())
+  end_time               DateTime?
+  total_reading_time     Int                     @default(0)
+  profile                Profile                 @relation(fields: [profile_id], references: [profile_id])
+  textRecognitions       TextRecognition[]
+  pronunciationFeedbacks PronunciationFeedback[]
+}
+
+model TextRecognition {
+  recognition_id  Int            @id @default(autoincrement())
+  session_id      Int
+  recognized_text String
+  is_readable     Boolean
+  captured_at     DateTime       @default(now())
+  session         ReadingSession @relation(fields: [session_id], references: [session_id])
+}
+
+model PronunciationFeedback {
+  feedback_id             Int            @id @default(autoincrement())
+  session_id              Int
+  word                    String
+  is_correct              Boolean
+  suggested_pronunciation String?
+  feedback_details        String?
+  feedback_at             DateTime       @default(now())
+  session                 ReadingSession @relation(fields: [session_id], references: [session_id])
+}
+
+model Report {
+  report_id                 Int      @id @default(autoincrement())
+  profile_id                Int
+  week_start_date           DateTime
+  week_end_date             DateTime
+  total_reading_time        Int      @default(0)
+  mispronounced_words_count Int      @default(0)
+  ai_help_count             Int      @default(0)
+  generated_at              DateTime @default(now())
+  profile                   Profile  @relation(fields: [profile_id], references: [profile_id])
+}
+
+model AppSettings {
+  settings_id                  Int             @id @default(autoincrement())
+  profile_id                   Int             @unique
+  real_time_assistance_enabled Boolean         @default(false)
+  feedback_level               FeedbackLevel   @default(SENTENCE)
+  theme_preference             ThemePreference @default(LIGHT)
+  created_at                   DateTime        @default(now())
+  updated_at                   DateTime        @updatedAt
+  profile                      Profile         @relation(fields: [profile_id], references: [profile_id])
+}
+
+model Subscription {
+  subscription_id Int                @id @default(autoincrement())
+  user_id         Int                @unique
+  plan_type       PlanType           @default(TRIAL)
+  start_date      DateTime
+  end_date        DateTime?
+  status          SubscriptionStatus @default(ACTIVE)
+  user            User               @relation(fields: [user_id], references: [user_id])
+}
+
+enum FeedbackLevel {
+  SENTENCE
+  PAGE
+  NONE
+}
+
+enum ThemePreference {
+  LIGHT
+  DARK
+}
+
+enum PlanType {
+  MONTHLY
+  ONE_TIME
+  TRIAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+  TRIAL
+}
+
+enum AgeRange {
+  AGE_2_5
+  AGE_5_10
+  AGE_11_13
+  AGE_14_18
+  AGE_ADULT
+}
+
+enum Grades {
+  PRE_SCHOOL
+  KINDERGARTEN
+  FIRST_GRADE
+  SECOND_GRADE
+  THIRD_GRADE
+  FOURTH_GRADE
+  FIFTH_GRADE
+  SIXTH_GRADE
+  SEVENTH_GRADE
+  EIGHTH_GRADE
+  NINTH_GRADE
+  TENTH_GRADE
+  ELEVENTH_GRADE
+  TWELFTH_GRADE
+}
+
+enum EducationLevel {
+  PRIMARY_EDUCATION
+  MIDDLE_SCHOOL
+  MATRICULATION
+  INTERMEDIATE
+}

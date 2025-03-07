@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "echo",
+			"type": "shell",
+			"command": "echo Hello"
+		},
+		{
+			"type": "shell",
+			"label": "prisma generate",
+			"command": "npx",
+			"args": [
+				"prisma",
+				"generate"
+			],
+			"presentation": {
+				"reveal": "silent"
+			}
+		}
+	]
+}
