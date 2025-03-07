@@ -43,6 +43,63 @@ model Token {
   user          User     @relation(fields: [user_id], references: [user_id])
 }
 
+enum FeedbackLevel {
+  SENTENCE
+  PAGE
+  NONE
+}
+
+enum ThemePreference {
+  LIGHT
+  DARK
+}
+
+enum PlanType {
+  MONTHLY
+  ONE_TIME
+  TRIAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+  TRIAL
+}
+
+enum AgeRange {
+  AGE_2_5
+  AGE_5_10
+  AGE_11_13
+  AGE_14_18
+  AGE_ADULT
+}
+
+enum Grades {
+  PRE_SCHOOL
+  KINDERGARTEN
+  FIRST_GRADE
+  SECOND_GRADE
+  THIRD_GRADE
+  FOURTH_GRADE
+  FIFTH_GRADE
+  SIXTH_GRADE
+  SEVENTH_GRADE
+  EIGHTH_GRADE
+  NINTH_GRADE
+  TENTH_GRADE
+  ELEVENTH_GRADE
+  TWELFTH_GRADE
+}
+
+enum EducationLevel {
+  PRIMARY_EDUCATION
+  MIDDLE_SCHOOL
+  MATRICULATION
+  INTERMEDIATE
+}
+
+
 model Profile {
   profile_id      Int              @id @default(autoincrement())
   user_id         Int
@@ -136,58 +193,3 @@ model Subscription {
   user            User               @relation(fields: [user_id], references: [user_id])
 }
 
-enum FeedbackLevel {
-  SENTENCE
-  PAGE
-  NONE
-}
-
-enum ThemePreference {
-  LIGHT
-  DARK
-}
-
-enum PlanType {
-  MONTHLY
-  ONE_TIME
-  TRIAL
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  EXPIRED
-  CANCELED
-  TRIAL
-}
-
-enum AgeRange {
-  AGE_2_5
-  AGE_5_10
-  AGE_11_13
-  AGE_14_18
-  AGE_ADULT
-}
-
-enum Grades {
-  PRE_SCHOOL
-  KINDERGARTEN
-  FIRST_GRADE
-  SECOND_GRADE
-  THIRD_GRADE
-  FOURTH_GRADE
-  FIFTH_GRADE
-  SIXTH_GRADE
-  SEVENTH_GRADE
-  EIGHTH_GRADE
-  NINTH_GRADE
-  TENTH_GRADE
-  ELEVENTH_GRADE
-  TWELFTH_GRADE
-}
-
-enum EducationLevel {
-  PRIMARY_EDUCATION
-  MIDDLE_SCHOOL
-  MATRICULATION
-  INTERMEDIATE
-}
