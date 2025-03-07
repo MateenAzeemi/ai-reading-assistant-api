@@ -6,5 +6,5 @@
 
 */
 -- AlterTable
-ALTER TABLE `profile` DROP COLUMN `education_level`,
-    MODIFY `age_range` ENUM('AGE_2_5', 'AGE_5_10', 'AGE_11_13', 'AGE_14_18', 'AGE_ADULT') NOT NULL;
+-- ALTER TABLE `profile` DROP COLUMN `education_level`,
+--     MODIFY `age_range` ENUM('AGE_2_5', 'AGE_5_10', 'AGE_11_13', 'AGE_14_18', 'AGE_ADULT') NOT NULL;
