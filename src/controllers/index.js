@@ -4,6 +4,8 @@ import sendVerificationCode from "./auth/sendVerificationCode.js";
 import verifyVerificationCode from "./auth/verifyVerificationCode.js";
 import getUsers from "./users/users.js";
 import getUserById from "./users/userById.js";
+import resetPassword from "./auth/resetPassword.js";
+import forgotPassword from "./auth/forgotPassword.js";
 
 export {
     signup,
@@ -12,4 +14,6 @@ export {
     getUserById,
     sendVerificationCode,
     verifyVerificationCode,
+    resetPassword,
+    forgotPassword,
 }
