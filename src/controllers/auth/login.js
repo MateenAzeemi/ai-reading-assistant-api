@@ -26,14 +26,20 @@ const login = async (req, res) => {
     const user = await db.user.findUnique({ where: { email: normalizedEmail } });
 
     if (!user) {
-      return res.status(401).json({ success: false, error: 'Invalid credentials.' });
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Email not registered. Please sign up first.' 
+      });
     }
 
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ success: false, error: 'Invalid credentials.' });
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Incorrect password. Please try again.' 
+      });
     }
 
     // Generate tokens (implement this function to generate access/refresh tokens)
