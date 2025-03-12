@@ -43,8 +43,8 @@ const login = async (req, res) => {
     }
 
     // Generate tokens (implement this function to generate access/refresh tokens)
-    const token = await generateTokens(user.user_id, deviceToken);
-    console.log("Login Token", token);
+    // const token = await generateTokens(user.user_id, deviceToken);
+    // console.log("Login Token", token);
     // Send MFA verification code
     await verificationCodeTransporter(normalizedEmail);
 
@@ -52,7 +52,7 @@ const login = async (req, res) => {
     const res_body = {
       success: true,
       message: 'Verification code sent to email. Please verify to continue.',
-      token: token,
+      // token: token,
     };
     console.log('RESPONSE_BODY:', res_body);
 
