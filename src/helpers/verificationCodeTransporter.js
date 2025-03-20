@@ -5,9 +5,7 @@ import nodemailer from 'nodemailer';
 const db = new PrismaClient();
 
 // Generate a 4-digit verification code
-const generateVerificationCode = () => {
-  return crypto.randomInt(1000, 9999).toString();
-};
+const generateVerificationCode = () => crypto.randomInt(1000, 9999).toString();
 
 // Save the verification code to the database
 const saveVerificationCode = async (email, verificationCode, expiryMinutes) => {
@@ -42,15 +40,34 @@ const createTransporter = () => {
   });
 };
 
-// Send the verification email
+// Send the verification email with improved formatting
 const sendVerificationEmail = async (email, verificationCode) => {
   const transporter = createTransporter();
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"AI Reading Assistant" <${process.env.EMAIL_USER}>`, // More professional
+    replyTo: 'support@yourdomain.com', // Improve trustworthiness
     to: email,
-    subject: 'Your Verification Code',
-    text: `Your verification code for AI Reading Assistant is ${verificationCode}. It will expire in 15 minutes.`,
+    subject: 'Confirm Your Account - AI Reading Assistant',
+    text: `Your confirmation code is ${verificationCode}. This code expires in 15 minutes.`,
+    html: `
+      <div style="background-color:#f8f9fa; padding:20px; font-family:Arial,sans-serif;">
+        <div style="max-width:500px; background:#fff; padding:20px; margin:auto; border-radius:10px;">
+          <h2 style="color:#333; text-align:center;">Welcome to AI Reading Assistant!</h2>
+          <p style="font-size:16px; color:#555; text-align:center;">
+            Use the code below to confirm your account:
+          </p>
+          <div style="text-align:center; background:#007bff; color:#fff; font-size:24px; padding:10px; border-radius:5px;">
+            <strong>${verificationCode}</strong>
+          </div>
+          <p style="color:#777; text-align:center;">This code expires in 15 minutes.</p>
+          <hr>
+          <p style="color:#999; font-size:12px; text-align:center;">
+            If you didn't request this code, please ignore this email.
+          </p>
+        </div>
+      </div>
+    `,
   };
 
   try {
@@ -62,7 +79,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
 };
 
 // Main function to handle verification code transport
-export const verificationCodeTransporter = async (email)=> {
+export const verificationCodeTransporter = async (email) => {
   try {
     const verificationCode = generateVerificationCode();
     const expiryMinutes = Number(process.env.CODE_EXPIRY_MINUTES) || 15; // Default to 15 minutes
