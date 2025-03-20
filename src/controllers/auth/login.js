@@ -42,20 +42,50 @@ const login = async (req, res) => {
       });
     }
 
-    // Generate tokens (implement this function to generate access/refresh tokens)
-    // const token = await generateTokens(user.user_id, deviceToken);
-    // console.log("Login Token", token);
-    // Send MFA verification code
-    await verificationCodeTransporter(normalizedEmail);
+    // Check if device token already exists for this user
+    const existingToken = await db.token.findFirst({
+      where: {
+        user_id: user.user_id,
+        device_token: deviceToken,
+        expires_at: {
+          gt: new Date() // Only consider valid tokens
+        }
+      }
+    });
 
-    // Respond with MFA status
+    let token;
+    let skipVerification = false;
+
+    if (existingToken) {
+      // Device is already authenticated - skip verification
+      skipVerification = true;
+      token = {
+        accessToken: existingToken.access_token,
+        expiresAt: existingToken.expires_at
+      };
+      console.log("Using existing token", token);
+    } else {
+      // Send MFA verification code for new device login
+      await verificationCodeTransporter(normalizedEmail);
+    }
+
+    // Respond based on whether verification is needed
     const res_body = {
       success: true,
-      message: 'Verification code sent to email. Please verify to continue.',
-      // token: token,
+      skipVerification,
+      message: skipVerification 
+        ? 'Device recognized. Login successful.' 
+        : 'Verification code sent to email. Please verify to continue.',
+      token: skipVerification ? token : null,
+      user: skipVerification ? {
+        user_id: user.user_id,
+        email: user.email,
+        name: user.name,
+        // Add other user fields you want to return
+      } : null
     };
+    
     console.log('RESPONSE_BODY:', res_body);
-
     return res.status(200).json(res_body);
   } catch (error) {
     console.error('Error during login:', error);
