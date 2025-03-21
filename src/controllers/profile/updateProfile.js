@@ -3,12 +3,12 @@ const prisma = new PrismaClient();
 
 const updateProfile = async (req, res) => {
     const { profileId } = req.params; // Extract profileId from URL params
-    const { name, ageRange, avatarUrl } = req.body; // Extract fields to update
+    const { name, ageRange, avatarUrl, grades } = req.body; // Extract fields to update
     const userId = req.user.userId; // Extract userId from JWT
 
     console.log('Extracted profileId:', profileId);
     console.log('Extracted userId:', userId);
-    console.log('Update data:', { name, ageRange, avatarUrl });
+    console.log('Update data:', { name, ageRange, avatarUrl, grades });
 
     // Input validation
     if (!name || !ageRange) {
@@ -19,17 +19,23 @@ const updateProfile = async (req, res) => {
         // Check if the profile belongs to the user
         const profile = await prisma.profile.findFirst({
             where: {
-                profile_id: {
-                    equals: parseInt(profileId, 10), // Correctly structured profile_id
-                },
-                user_id: {
-                    equals: parseInt(userId, 10), // Correctly structured user_id
-                },
+                profile_id: parseInt(profileId, 10), // Using profile_id field
+                user_id: parseInt(userId, 10),
             },
         });
 
         if (!profile) {
             return res.status(404).json({ message: 'Profile not found or access denied' });
+        }
+
+        // Handle avatar URL processing
+        let finalAvatarUrl = avatarUrl;
+        if (avatarUrl && avatarUrl.startsWith('data:image')) {
+            // For now, just use the base64 string
+            // In production, you would upload to storage:
+            // const cloudinaryResponse = await uploadToCloudinary(avatarUrl);
+            // finalAvatarUrl = cloudinaryResponse.secure_url;
+            finalAvatarUrl = avatarUrl;
         }
 
         // Update the profile
@@ -38,7 +44,8 @@ const updateProfile = async (req, res) => {
             data: {
                 name,
                 age_range: ageRange,
-                avatar_url: avatarUrl,
+                avatar_url: finalAvatarUrl,
+                grades: grades !== undefined ? grades : undefined,
             },
         });
 
