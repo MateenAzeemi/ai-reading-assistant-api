@@ -7,5 +7,7 @@ import savePageData from './savePageData.js';
 import fetchPages from './fetchPages.js';
 import getLatestBookNumber from './getLatestBookNumber.js';
 import { createBook, getBook } from './createOrGetBook.js';
+import deleteBook from './deleteBook.js';
 import fetchBooks from './fetchBook.js';
-export { createProfile, getAllProfiles, updateProfile, deleteProfile, updateReadingLevel, savePageData, fetchPages, fetchBooks, getLatestBookNumber, createBook, getBook };
+import updateBookTitle from './updateBook.js';
+export { createProfile, getAllProfiles, updateProfile, deleteProfile, updateReadingLevel, savePageData, fetchPages, updateBookTitle, deleteBook, fetchBooks, getLatestBookNumber, createBook, getBook };

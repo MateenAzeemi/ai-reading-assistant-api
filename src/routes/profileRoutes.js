@@ -17,5 +17,8 @@ router.get('/:profileId/books', authenticate, profileController.fetchBooks); // 
 router.get('/:profileId/latest-book-number', authenticate, profileController.getLatestBookNumber);
 router.post('/:profileId/create-book', authenticate, profileController.createBook);
 router.get('/:profileId/get-book', authenticate, profileController.getBook);
+router.delete('/:profileId/books/:bookNumber', authenticate, profileController.deleteBook);
+router.put('/:profileId/books/:bookNumber', authenticate, profileController.updateBookTitle);
+
 
 export default router;
