@@ -30,8 +30,8 @@ const createTransporter = () => {
   }
 
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: Number(process.env.EMAIL_PORT) || 587,
+    host: process.env.EMAIL_HOST || 'smtp.hostinger.com',
+    port: Number(process.env.EMAIL_PORT) || 465,
     secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
@@ -45,15 +45,15 @@ const sendVerificationEmail = async (email, verificationCode) => {
   const transporter = createTransporter();
 
   const mailOptions = {
-    from: `"AI Reading Assistant" <${process.env.EMAIL_USER}>`, // More professional
+    from: `"Lekture.ait" <${process.env.EMAIL_USER}>`, // More professional
     replyTo: 'support@yourdomain.com', // Improve trustworthiness
     to: email,
-    subject: 'Confirm Your Account - AI Reading Assistant',
+    subject: 'Confirm Your Account - Lekture.ai',
     text: `Your confirmation code is ${verificationCode}. This code expires in 15 minutes.`,
     html: `
       <div style="background-color:#f8f9fa; padding:20px; font-family:Arial,sans-serif;">
         <div style="max-width:500px; background:#fff; padding:20px; margin:auto; border-radius:10px;">
-          <h2 style="color:#333; text-align:center;">Welcome to AI Reading Assistant!</h2>
+          <h2 style="color:#333; text-align:center;">Welcome to Lekture.ait!</h2>
           <p style="font-size:16px; color:#555; text-align:center;">
             Use the code below to confirm your account:
           </p>

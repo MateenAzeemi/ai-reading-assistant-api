@@ -90,6 +90,7 @@ enum Grades {
   TENTH_GRADE
   ELEVENTH_GRADE
   TWELFTH_GRADE
+  NONE
 }
 
 enum EducationLevel {
