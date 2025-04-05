@@ -43,17 +43,20 @@ const createTransporter = () => {
 // Send the verification email with improved formatting
 const sendVerificationEmail = async (email, verificationCode) => {
   const transporter = createTransporter();
+  // <img src="https://imgur.com/a/3DzW5wq.png" alt="Lekture.ai Logo" style="height:60px;" />
 
   const mailOptions = {
-    from: `"Lekture.ait" <${process.env.EMAIL_USER}>`, // More professional
-    replyTo: 'support@yourdomain.com', // Improve trustworthiness
+    from: `"Lekture.ai" <${process.env.EMAIL_USER}>`,
+    replyTo: 'support@yourdomain.com',
     to: email,
-    subject: 'Confirm Your Account - Lekture.ai',
+    subject: 'Confirm Your Account - Lekture',
     text: `Your confirmation code is ${verificationCode}. This code expires in 15 minutes.`,
     html: `
       <div style="background-color:#f8f9fa; padding:20px; font-family:Arial,sans-serif;">
         <div style="max-width:500px; background:#fff; padding:20px; margin:auto; border-radius:10px;">
-          <h2 style="color:#333; text-align:center;">Welcome to Lekture.ait!</h2>
+          <div style="text-align:center; margin-bottom:20px;">
+          </div>
+          <h2 style="color:#333; text-align:center;">Welcome to Lekture</h2>
           <p style="font-size:16px; color:#555; text-align:center;">
             Use the code below to confirm your account:
           </p>
@@ -77,6 +80,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
     throw new Error('Failed to send verification email.');
   }
 };
+
 
 // Main function to handle verification code transport
 export const verificationCodeTransporter = async (email) => {
